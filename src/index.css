@@ -91,10 +91,9 @@ body {
 
     .dock-icon {
       @apply size-14 3xl:size-20 cursor-pointer;
-      transform-origin: center bottom;
 
       img {
-        @apply object-cover object-center pointer-events-none;
+        @apply object-cover object-center;
       }
     }
   }
