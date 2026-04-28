@@ -4,7 +4,7 @@ import { useGSAP } from "@gsap/react";
 
 
 const FONT_WEIGHTS = {
-  subTitle: { min: 300, max: 400, default: 300 },
+  subTitle: { min: 300, max: 700, default: 300 },
   title: { min: 400, max: 900, default: 400 }
 };
 
@@ -32,8 +32,23 @@ const setUpTextHover = (container, type) => {
   const letters = container.querySelectorAll("span");
   const { min, max, default: base } = FONT_WEIGHTS[type];
 
-  const animateLetter = (letter, weight, duration = 0.25) => {
-    return gsap.to(letter, {duration, ease: "power2.out", fontVariationSettings: `"wght" ${weight}`})
+  const animateLetter = (letter, weight, duration = 0.25, useRgb = false) => {
+    const props = {
+      duration,
+      ease: "power2.out",
+      fontVariationSettings: `"wght" ${weight}`,
+    };
+    
+    // RGB color shift only for subtitle
+    if (useRgb) {
+      const t = (weight - 300) / 400;
+      const r = Math.round(229 + (96 - 229) * t);
+      const g = Math.round(231 + (180 - 231) * t);
+      const b = Math.round(235 + (21 - 235) * t);
+      props.color = `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    return gsap.to(letter, props)
   }
 
   const handleMouseMove = (e) => {
@@ -43,7 +58,7 @@ const setUpTextHover = (container, type) => {
     letters.forEach((letter) => {
       const { left: l, width: w } = letter.getBoundingClientRect();
       const distance = Math.abs(mouseX - (l - left + w / 2));
-      const intensity = Math.exp(-(distance ** 2) / 20000);
+      const intensity = Math.exp(-(distance ** 2) / 8000);
       animateLetter(letter, min + (max - min) * intensity);
     });
   }
